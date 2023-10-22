@@ -1,0 +1,65 @@
+```g.mko.re
+                    _                   
+   __ _   _ __ ___ | | _____   _ __ ___ 
+  / _` | | '_ ` _ \| |/ / _ \ | '__/ _ \
+ | (_| |_| | | | | |   < (_) || | |  __/
+  \__, (_)_| |_| |_|_|\_\___(_)_|  \___|
+  |___/                                 
+
+```
+
+# Remko's Capsule
+
+=> /search 🔎 Search...
+
+Outside of this capsule, you can also find me here:
+
+=> https://mas.to/@remko 🦣 Mastodon
+=> https://github.com/remko ⌨ GitHub
+=> https://mko.re 🌐 WWW
+
+# Gemlog
+
+=> /ublog 💬 Microblog
+
+## Featured posts
+
+{{range $i, $e := .Posts}}{{if .Featured -}}
+=> {{.URL}} {{.Date}} - {{.Title}}
+{{ end }}{{end -}}
+
+## Latest posts
+
+{{range $i, $e := .Posts}}{{if lt $i 10 -}}
+=> {{.URL}} {{.Date}} - {{.Title}}
+{{ end }}{{end -}}
+=> /blog All posts
+
+# Software
+
+Some of my public software projects:
+
+=> https://github.com/remko/waforth/ WAForth: Small but complete dynamic Forth Interpreter/Compiler for and in WebAssembly
+=> https://github.com/remko/dsadmin DSAdmin: Google Cloud Datastore Emulator Administration UI
+=> https://github.com/remko/age-plugin-se age-plugin-se: Age plugin for Apple's Secure Enclave
+=> https://github.com/remko/go-mkvparse go-mkvparse: Fast Matroska parser in Go
+=> https://github.com/remko/qlmka macOS Quick Look plugin for Matroska `.mka` files
+=> https://github.com/remko/cloudrun-slog Example Cloud Run Go app with lightweight structured logging using `slog`
+
+Most of my other public projects can be found on GitHub:
+
+=> https://github.com/remko My GitHub repositories
+
+# Books & Chapters
+
+=> https://mko.re/documents/beautiful-xmpp-testing/ Beautiful XMPP Testing (Chapter from "Beautiful Testing")
+=> https://oreilly.com/catalog/9780596521271 XMPP: The Definitive Guide
+=> https://dtai.cs.kuleuven.be/ppcbook/ The First 10 Prolog Programming Contests
+
+# Meta
+
+This capsule is running on a first-gen Raspberry Pi Model B.
+The app used to build and serve this capsule can be found on GitHub.
+
+=> https://en.wikipedia.org/wiki/Raspberry_Pi Raspberry Pi
+=> https://github.com/remko/gemsite gemsite @ GitHub

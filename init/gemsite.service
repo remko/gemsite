@@ -1,0 +1,19 @@
+[Unit]
+Description=Gemini Site
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=nobody
+WorkingDirectory=/opt/gemsite
+ExecStartPre=
+ExecStart=/opt/gemsite/servegemsite
+ExecStartPost=
+ExecStop=
+ExecReload=
+
+[Install]
+WantedBy=multi-user.target

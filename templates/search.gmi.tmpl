@@ -1,0 +1,11 @@
+# Search "{{.Query}}"
+
+=> /search 🔎 Search...
+
+{{ if .Pages -}}
+{{range .Pages -}}
+=> {{.Path}} {{ if .Date }}{{.Date}} - {{ end}}{{.Title}}
+{{ end -}}
+{{- else -}}
+No pages found
+{{ end -}}

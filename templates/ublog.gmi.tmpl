@@ -1,0 +1,13 @@
+# Remko's Microblog
+
+{{range .Statuses -}}
+=> {{.URL}} 💬 {{.CreatedAt.Format "January 2, 2006"}}
+> {{.Content}}
+{{range .Links -}}
+=>{{.URL}} {{.Title}}
+{{ end }}
+
+{{ end -}}
+
+=> https://mas.to/@remko 🦣 More on Mastodon
+

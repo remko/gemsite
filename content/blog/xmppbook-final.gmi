@@ -1,0 +1,7 @@
+# Final revision of the XMPP book submitted
+
+Remko Tronçon · February 3, 2009
+
+After a few weeks of heavy labour and long nights, Peter, Kevin, and I just submitted the final revision of “XMPP: The Definitive Guide” to the folks at O’Reilly. All the feedback from our (thorough) reviewers has been processed, we added quite a few extra bits and clarifications (58 pages to be exact), polished the whole thing up, and went through the resulting manuscript with a fine toothed comb. We hope the people who will read this book will be as satisfied with the end result as we are. If all goes according to plan, the book should roll out of the presses in about 2 months. In the mean time, you can expect an update to the on-line rough cut version of the book in the next couple of days.
+
+=> http://oreilly.com/catalog/9780596157197 XMPP: The Definitive Guide · O'Reilly

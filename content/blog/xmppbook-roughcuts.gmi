@@ -1,0 +1,8 @@
+# Rough cuts of XMPP book now available
+
+Remko Tronçon · December 10, 2008
+
+While Kevin, Peter, and I are working very hard to finish the first draft of our upcoming book ‘XMPP: The Definitive Guide’, O’Reilly has recently released early versions of most of the chapters of the book as Rough Cuts. People interested in learning about XMPP today can now get a preliminary version of the book, and get updates as the book progresses.
+
+=> /blog/xmppbook-intro "We're Writing an XMPP Book"
+=> http://oreilly.com/catalog/9780596157197 XMPP: The Definitive Guide · O'Reilly

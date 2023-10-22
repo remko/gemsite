@@ -1,0 +1,9 @@
+/servegemsite
+/buildgemsite
+/server.key
+/server.crt
+/admin.key
+/admin.crt
+/search.idx
+/gemsite
+/tmp

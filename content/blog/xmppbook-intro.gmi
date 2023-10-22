@@ -1,0 +1,8 @@
+# We're writing an XMPP book
+
+Remko Tronçon · August 21, 2008
+
+I’m excited to announce that Peter, Kevin, and I recently got the green light from O’Reilly to start writing a book about Jabber/XMPP. The book will be targeted at a diverse public: on one hand, people who want to get acquainted with XMPP and will get an introduction and a general overview of XMPP, its workings, and its possibilities. On the other hand,  software engineers who want to integrate XMPP into their products will get a guide to implementing different use cases of XMPP through a series of different developer stories. The book is expected to be available in 2009, so start making some room on your bookshelf!
+
+=> http://stpeter.im Peter Saint-Andre
+=> http://kismith.co.uk Kevin Smith
