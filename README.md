@@ -18,6 +18,10 @@ The [capsule server](https://github.com/remko/gemsite/blob/main/gemsite.go) supp
 - Administration operations (e.g. collecting a CPU profile) using TLS Client Certificate
   authentication
 
+<div align="center">
+<img style="height: 350px;" src="./content/blog/gemsite/blog.png" alt="Blog"><img style="height:350px;" src="./content/blog/gemsite/ublog.png" alt="Microblog">
+<img style="height: 350px;" src="./content/blog/gemsite/search.png" alt="Search">
+</div>
 
 # Ops
 
