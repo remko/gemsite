@@ -16,6 +16,7 @@ const (
 	InFrontMatter
 	InBody
 	InCode
+	InTable
 )
 
 type TextBlockType int
@@ -92,6 +93,7 @@ func ConvertMarkdownToGemtext(in io.Reader, outw io.Writer) (Page, error) {
 	page := Page{}
 	for scn.Scan() {
 		line := scn.Text()
+
 		if state == Initial {
 			if strings.HasPrefix(line, "---") {
 				state = InFrontMatter
@@ -116,63 +118,84 @@ func ConvertMarkdownToGemtext(in io.Reader, outw io.Writer) (Page, error) {
 				page.Time = t
 				out.WriteString(fmt.Sprintf("%s · %s\n\n", author, t.Format("January 2, 2006")))
 			}
-		} else if state == InBody {
-			if line == "" {
-				flushTextBlock()
-				out.WriteString("\n")
-				if flushLinks() {
-					out.WriteString("\n")
-				}
-				continue
+		} else {
+			if state == InTable && !strings.HasPrefix(line, `|`) {
+				out.WriteString("```\n")
+				state = InBody
 			}
-			if strings.HasPrefix(line, "```") {
-				flushTextBlock()
+
+			if state == InBody {
+				if line == "" {
+					flushTextBlock()
+					out.WriteString("\n")
+					if flushLinks() {
+						out.WriteString("\n")
+					}
+					continue
+				}
+				if strings.HasPrefix(line, "<div") || strings.HasPrefix(line, "<!--") {
+					continue
+				}
+				if strings.HasPrefix(line, "|") {
+					flushTextBlock()
+					out.WriteString("```\n")
+					out.WriteString(line)
+					out.WriteByte(0xa)
+					state = InTable
+					continue
+				}
+				if strings.HasPrefix(line, "```") {
+					flushTextBlock()
+					out.WriteString(line)
+					out.WriteByte(0xa)
+					state = InCode
+					continue
+				}
+				if strings.HasPrefix(line, "- ") {
+					flushTextBlock()
+					textblockType = Bullet
+					addText(line[2:])
+					continue
+				}
+				if line[0] == '>' {
+					if textblockType != Quote {
+						flushTextBlock()
+					}
+					if len(line) >= 3 {
+						addText(line[2:])
+						textblockType = Quote
+					} else {
+						flushTextBlock()
+						out.WriteString(">\n")
+					}
+					continue
+				}
+
+				m := imageRE.FindStringSubmatch(line)
+				if m != nil {
+					flushTextBlock()
+					out.WriteString(fmt.Sprintf("=> %s %s\n", m[2], m[1]))
+					continue
+				}
+
+				if textblockType == Bullet {
+					if !strings.HasPrefix(line, "  ") {
+						return page, fmt.Errorf("expected indent: %s", line)
+					}
+					line = line[2:]
+				}
+
+				addText(line)
+			} else if state == InTable {
 				out.WriteString(line)
 				out.WriteByte(0xa)
-				state = InCode
-				continue
-			}
-			if strings.HasPrefix(line, "- ") {
-				flushTextBlock()
-				textblockType = Bullet
-				addText(line[2:])
-				continue
-			}
-			if line[0] == '>' {
-				if textblockType != Quote {
-					flushTextBlock()
+			} else if state == InCode {
+				out.WriteString(line)
+				out.WriteByte(0xa)
+				if strings.HasPrefix(line, "```") {
+					state = InBody
+					flushLinks()
 				}
-				if len(line) >= 3 {
-					addText(line[2:])
-					textblockType = Quote
-				} else {
-					flushTextBlock()
-					out.WriteString(">\n")
-				}
-				continue
-			}
-
-			m := imageRE.FindStringSubmatch(line)
-			if m != nil {
-				flushTextBlock()
-				out.WriteString(fmt.Sprintf("=> %s %s\n", m[2], m[1]))
-				continue
-			}
-
-			if textblockType == Bullet {
-				if !strings.HasPrefix(line, "  ") {
-					return page, fmt.Errorf("expected indent: %s", line)
-				}
-				line = line[2:]
-			}
-
-			addText(line)
-		} else if state == InCode {
-			out.WriteString(line)
-			out.WriteByte(0xa)
-			if strings.HasPrefix(line, "```") {
-				state = InBody
-				flushLinks()
 			}
 		}
 	}
