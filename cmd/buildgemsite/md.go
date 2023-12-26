@@ -91,6 +91,7 @@ func ConvertMarkdownToGemtext(in io.Reader, outw io.Writer) (Page, error) {
 	scn := bufio.NewScanner(in)
 	scn.Split(bufio.ScanLines)
 	page := Page{}
+	var commentURL string
 	for scn.Scan() {
 		line := scn.Text()
 
@@ -108,6 +109,8 @@ func ConvertMarkdownToGemtext(in io.Reader, outw io.Writer) (Page, error) {
 				title = title[1 : len(title)-1]
 				page.Title = title
 				out.WriteString(fmt.Sprintf("# %s\n\n", title))
+			} else if strings.HasPrefix(line, "commentURL: ") {
+				commentURL = strings.TrimSpace(line[11:])
 			} else if strings.HasPrefix(line, "featured: ") {
 				page.Featured = true
 			} else if strings.HasPrefix(line, "date: ") {
@@ -201,6 +204,10 @@ func ConvertMarkdownToGemtext(in io.Reader, outw io.Writer) (Page, error) {
 	}
 	flushTextBlock()
 	flushLinks()
+
+	if len(commentURL ) > 0 {
+		out.WriteString(fmt.Sprintf("\n\n=> %s %s\n", commentURL, "💬 Comments"))
+	}
 
 	return page, nil
 }
