@@ -17,6 +17,7 @@ import (
 	"net/url"
 	"path/filepath"
 	"regexp"
+	"runtime/debug"
 	"runtime/pprof"
 	"sort"
 	"strings"
@@ -84,6 +85,14 @@ func handleRequest(conn net.Conn) {
 	defer conn.Close()
 
 	tp := textproto.NewConn(conn)
+
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("panic: %v\n%s", r, string(debug.Stack()))
+			tp.PrintfLine("40")
+		}
+	}()
+
 	line, err := tp.ReadLine()
 	defer func() {
 		log.Printf("%s %s (%v)", conn.RemoteAddr(), line, time.Since(start))
