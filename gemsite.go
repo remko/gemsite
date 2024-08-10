@@ -161,17 +161,8 @@ func handleRequest(conn net.Conn) {
 		return
 	}
 
-	// Map path to static file
-	if path == "/" || path == "" {
-		path = "index.gmi"
-	} else if !strings.Contains(path, ".") {
-		path = path[1:] + ".gmi"
-	} else {
-		path = path[1:]
-	}
-
 	// Serve static file
-	f, err := content.Open(path)
+	f, err := content.Open(pathToFile(path))
 	if err != nil {
 		log.Printf("error opening file: %v", err)
 		tp.PrintfLine("51")
@@ -320,25 +311,26 @@ func fetchStatuses() ([]Status, error) {
 		if tcontent[0] == '@' {
 			continue
 		}
-		content := strings.ReplaceAll(tcontent, "&#39;", "'")
-		content = strings.ReplaceAll(content, "&quot;", "'")
-		content = strings.ReplaceAll(content, "&amp;", "&")
+		pcontent := strings.ReplaceAll(tcontent, "&#39;", "'")
+		pcontent = strings.ReplaceAll(pcontent, "&quot;", "'")
+		pcontent = strings.ReplaceAll(pcontent, "&amp;", "&")
 		lms := urlRE.FindAllStringSubmatch(tcontent, -1)
 		if len(lms) > 1 {
-			content = urlRE.ReplaceAllString(content, "🌐")
+			pcontent = urlRE.ReplaceAllString(pcontent, "🌐")
 		} else {
-			content = urlRE.ReplaceAllString(content, "")
+			pcontent = urlRE.ReplaceAllString(pcontent, "")
 		}
-		status := Status{ID: s.ID, Content: content, CreatedAt: s.CreatedAt, URL: s.URL}
+		status := Status{ID: s.ID, Content: pcontent, CreatedAt: s.CreatedAt, URL: s.URL}
 		for _, m := range lms {
 			if s.Card.URL == m[0] {
-				status.Links = append(status.Links, Link{URL: s.Card.URL, Title: s.Card.Title})
+				status.Links = append(status.Links, Link{URL: rewriteURL(s.Card.URL), Title: s.Card.Title})
 			} else {
-				status.Links = append(status.Links, Link{URL: m[0], Title: m[0]})
+				url := rewriteURL(m[0])
+				status.Links = append(status.Links, Link{URL: url, Title: stripURL(url)})
 			}
 		}
 		for _, ma := range s.MediaAttachments {
-			status.Links = append(status.Links, Link{URL: ma.URL, Title: "🖼 " + ma.Description})
+			status.Links = append(status.Links, Link{URL: rewriteURL(ma.URL), Title: "🖼 " + ma.Description})
 		}
 		nstatuses = append(nstatuses, status)
 	}
@@ -366,6 +358,40 @@ type MStatus struct {
 var htmltagRE = regexp.MustCompile(`</?(p|span|br|a|del|pre|code|em|strong|b|i|u|ul|ol|li|blockquote)[^>]*>`)
 
 var urlRE = regexp.MustCompile(`https?://[^ ]*`)
+
+////////////////////////////////////////////////////////////////////////////////
+// Common
+////////////////////////////////////////////////////////////////////////////////
+
+var localRE = regexp.MustCompile(`^https?://mko.re`)
+
+func rewriteURL(url string) string {
+	if localRE.MatchString(url) {
+		path := strings.TrimRight(localRE.ReplaceAllString(url, ""), "/")
+		_, err := content.Open(pathToFile(path))
+		if err == nil {
+			return path
+		}
+	}
+	return url
+}
+
+func stripURL(fullurl string) string {
+	u, _ := url.Parse(fullurl)
+	u.RawQuery = ""
+	u.Fragment = ""
+	return u.String()
+}
+
+func pathToFile(path string) string {
+	if path == "/" || path == "" {
+		return "index.gmi"
+	} else if !strings.Contains(path, ".") {
+		return path[1:] + ".gmi"
+	} else {
+		return path[1:]
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Resources
