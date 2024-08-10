@@ -314,6 +314,9 @@ func fetchStatuses() ([]Status, error) {
 	var nstatuses []Status
 	for _, s := range mstatuses {
 		tcontent := htmltagRE.ReplaceAllString(s.Content, "")
+		if len(tcontent) == 0 {
+			continue
+		}
 		if tcontent[0] == '@' {
 			continue
 		}
