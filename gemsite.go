@@ -171,13 +171,14 @@ func handleRequest(conn net.Conn) {
 	}
 
 	// Serve static file
-	f, err := content.Open(pathToFile(path))
+	fp := pathToFile(path)
+	f, err := content.Open(fp)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
 		tp.PrintfLine("51")
 		return
 	}
-	tp.PrintfLine("20 %s", mime.TypeByExtension(filepath.Ext(path)))
+	tp.PrintfLine("20 %s", mime.TypeByExtension(filepath.Ext(fp)))
 	_, err = io.Copy(conn, f)
 	if err != nil {
 		log.Printf("error sending response: %v", err)
